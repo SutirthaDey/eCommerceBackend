@@ -99,7 +99,7 @@ products.forEach((product)=>{
 }
 
 function getProducts(currentPage){
-    axios.get(`http://ec2-54-245-195-107.us-west-2.compute.amazonaws.com:3000/products?page=${currentPage}`)
+    axios.get(`http://localhost:3000/products?page=${currentPage}`)
     .then((res)=>{
         const {totalItems,hasNextPage,lastPage} = res.data;
         showProducts(res.data.products);
@@ -109,7 +109,7 @@ function getProducts(currentPage){
 }
 
 function getCart(currentCart){
-    axios.get(`http://ec2-54-245-195-107.us-west-2.compute.amazonaws.com:3000/cart?cart=${currentCart}`)
+    axios.get(`http://localhost:3000/cart?cart=${currentCart}`)
     .then((res)=>{
         const {totalCartItems,hasNextCart,lastCart} = res.data;
         document.querySelector('#total-value').innerText = '0';
@@ -221,7 +221,7 @@ function parentContainerHelper(e){
         }
         const prodId = document.querySelector(`#${id} input`).value;
 
-        axios.post('http://ec2-54-245-195-107.us-west-2.compute.amazonaws.com:3000/cart',{prodId:prodId})
+        axios.post('http://localhost:3000/cart',{prodId:prodId})
         .then((res)=> getCart(1));
 
         showToastNotification(`<h4>Your Product : <span>${name}</span> is added to the cart<h4>`);
@@ -238,7 +238,7 @@ function parentContainerHelper(e){
             return
         }
 
-        axios.post('http://ec2-54-245-195-107.us-west-2.compute.amazonaws.com:3000/orders')
+        axios.post('http://localhost:3000/orders')
         .then((order)=>{
             const orderId = order.data;
 
@@ -254,7 +254,7 @@ function parentContainerHelper(e){
         const id = e.target.parentNode.parentNode.id;
         const prodId = document.querySelectorAll(`#${id} input`)[1].value;
 
-        axios.post('http://ec2-54-245-195-107.us-west-2.compute.amazonaws.com:3000/cart-delete-item',{prodId:prodId})
+        axios.post('http://localhost:3000/cart-delete-item',{prodId:prodId})
         .then(()=>{
             getCart(1);
         })
@@ -292,7 +292,7 @@ function showOrders(orders){
 }
 
 function getOrders(){
-    axios.get('http://ec2-54-245-195-107.us-west-2.compute.amazonaws.com:3000/orders')
+    axios.get('http://localhost:3000/orders')
     .then((orders)=>{
         showOrders(orders.data);
     })
@@ -306,10 +306,10 @@ window.addEventListener('DOMContentLoaded',(e)=>{
 
     const href = window.location.href.split('/');
     const endPoint = href[href.length-1];
+    getCart(currentCart);
 
     if(endPoint.startsWith('dynamicstore.html',0)){
         getProducts(currentPage);
-        getCart(currentCart);
 
         productPages.addEventListener('click',(e)=> setQueryParams(e,'page'));
         cartPages.addEventListener('click',(e)=> setQueryParams(e,'cart'));

@@ -161,9 +161,7 @@ exports.getOrders = async(req, res, next) => {
   const orderDetails = orders.map(order=> {
     return {id:order.id,products: order.products}
   });
-  const cart = await req.user.getCart();
-  await cart.setProducts(null);
-
+  
   res.json(orderDetails);
 };
 
