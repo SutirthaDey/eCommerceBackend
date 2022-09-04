@@ -1,6 +1,3 @@
-const Cart = require('../models/cart');
-const OrderDetails = require('../models/order-details');
-const Order = require('../models/order');
 const Product = require('../models/product');
 
 let itemsPerPage = 2;
@@ -19,13 +16,17 @@ exports.getProducts = (req, res, next) => {
   .then(count=> {
     totalItems = count;
     lastPage = Math.ceil(totalItems/itemsPerPage);
-    return Product.findAll({
+    return Product.fetchAll({
       limit: itemsPerPage,
       offset: (currentPage-1)*itemsPerPage
     })
   })
   .then((products)=>{
-    res.json({products,totalItems,currentPage,hasNextPage,lastPage});
+    res.render('shop/product-list',{
+      prods: products,
+      pageTitle: 'Products',
+      path: '/products'
+    })
   })
   .catch((err)=> console.log(err));
 };
@@ -36,7 +37,7 @@ exports.getProductDetails = (req,res,next)=>{
 
   // sequelize uses findByPk to find elements by Id in database
   // returns a single element
-  Product.findByPk(prodId)
+  Product.findById(prodId)
   .then((product)=>{
     res.render('shop/product-detail', {
       product: product,
